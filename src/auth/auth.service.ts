@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { AuthDto } from './dto/auth.dto';
+import { LoginDto, RegistrationDto, UpdateDto } from './dto/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { verify } from 'argon2';
@@ -16,7 +16,7 @@ export class AuthService {
     private jwt : JwtService
     ){}
 
-  async registrationUser(dto: AuthDto) {
+  async registrationUser(dto: RegistrationDto) {
 
     const finedUser = await this.userService.findOneByEmail(dto.email)
     
@@ -32,7 +32,23 @@ export class AuthService {
 
   }
 
-  async loginUser(dto: AuthDto) {
+  async updateUser(dto: UpdateDto) {
+
+    const finedUser = await this.userService.findOneByEmail(dto.email)
+    
+    if(!finedUser) throw new BadRequestException("User dont find")
+
+    const {password, ...user} = await this.userService.update(dto)
+
+    const tokens = await this.generateTokens(user.id)
+    return {
+      user,
+      ...tokens
+    };
+
+  }
+
+  async loginUser(dto: LoginDto) {
 
     const {password, ...user} = await this.validateUser(dto)
     const tokens = await this.generateTokens(user.id)
@@ -73,14 +89,14 @@ export class AuthService {
  }
 
 
-  private async validateUser(dto:AuthDto){
+  private async validateUser(dto:LoginDto){
     const user = await this.userService.findOneByEmail(dto.email)
 
     if(!user)throw new NotFoundException("User not found")
 
     const isValid = await verify(user.password, dto.password)
 
-    if(!isValid) throw new UnauthorizedException("Invalid password")
+    if(!isValid) throw new NotFoundException("Invalid password")
 
     return user
   }
