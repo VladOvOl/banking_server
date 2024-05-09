@@ -9,15 +9,15 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at") 
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at") 
 
-  name    String   @db.VarChar(255)
-  email       String   @unique @db.VarChar(255)
-  password    String   @db.VarChar(255)
-  phoneNumber String?  @db.VarChar(255) @map("phone_number")
-  address     String?  @db.VarChar(255) @map("address")
+  userFullName    String   @db.VarChar(255) @map("user_full_name")
+  userEmail       String   @unique @db.VarChar(255) @map("user_email")
+  userPassword    String   @db.VarChar(255) @map("user_password")
+  userPhoneNumber String?   @db.VarChar(255) @map("user_phone_number")
+  userAddress     String?   @db.VarChar(255) @map("user_address")
  
   cards       Card[] 
   
@@ -25,13 +25,42 @@ model User {
 }
 
 model Card {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at") 
+  id               String   @id @db.VarChar(255)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at") 
 
-  name      String   @db.VarChar(255) 
-  user      User?    @relation(fields: [userId],references: [id])
-  userId    Int?     @map("user_id")
+  cardTitle        String   @db.VarChar(255) @map("card_title")
+  cardUserFullName String   @db.VarChar(255) @map("card_user_fullname")
+  cardNumber       String   @unique @db.VarChar(255) @map("card_number")
+  cardDateMonth    Int      @map("card_date_month")
+  cardDateYear     Int      @map("card_date_year")
+  cardUserPinCode  String   @map("card_user_pincode")
+  cardCVC          String   @map("card_cvc")
+  cardBalance      Float    @map("card_balance")
+  cardStatus       Boolean  @map("card_status")
+
+  user             User     @relation(fields: [userId],references: [id])
+  userId           Int      @map("user_id")
+
+  cardTransactions     CardTransaction[]
   
   @@map("cards")
+}
+
+model CardTransaction {
+  id                      Int      @id @default(autoincrement())
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at") 
+
+  value                   Float     @map("value")
+  userSenderFullName      String   @db.VarChar(255) @map("user_sender_full_name")
+  userSenderCardNumber    String   @db.VarChar(255) @map("card_sender_number")
+  userRecipientFullName   String   @db.VarChar(255) @map("user_recipient_full_name")
+  userRecipientCardNumber String   @db.VarChar(255) @map("card_recipient_number")
+  process                 String   @db.VarChar(255) @map("process")
+
+  card                    Card     @relation(fields: [cardId],references: [id])
+  cardId                  String   @map("card_id")
+  
+  @@map("card_transaction")
 }

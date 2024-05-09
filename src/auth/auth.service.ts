@@ -16,13 +16,14 @@ export class AuthService {
     private jwt : JwtService
     ){}
 
+
   async registrationUser(dto: RegistrationDto) {
 
-    const finedUser = await this.userService.findOneByEmail(dto.email)
+    const finedUser = await this.userService.findOneByEmail(dto.userEmail)
     
     if(finedUser) throw new BadRequestException("User already exist")
 
-    const {password, ...user} = await this.userService.create(dto)
+    const {userPassword, ...user} = await this.userService.create(dto)
 
     const tokens = await this.generateTokens(user.id)
     return {
@@ -34,11 +35,11 @@ export class AuthService {
 
   async updateUser(dto: UpdateDto) {
 
-    const finedUser = await this.userService.findOneByEmail(dto.email)
+    const finedUser = await this.userService.findOneByEmail(dto.userEmail)
     
     if(!finedUser) throw new BadRequestException("User dont find")
 
-    const {password, ...user} = await this.userService.update(dto)
+    const {userPassword, ...user} = await this.userService.update(dto)
 
     const tokens = await this.generateTokens(user.id)
     return {
@@ -50,7 +51,7 @@ export class AuthService {
 
   async loginUser(dto: LoginDto) {
 
-    const {password, ...user} = await this.validateUser(dto)
+    const {userPassword, ...user} = await this.validateUser(dto)
     const tokens = await this.generateTokens(user.id)
     return {
       user,
@@ -78,7 +79,7 @@ export class AuthService {
     throw new UnauthorizedException('Invalid refresh token')
   }
 
-  const {password, ...user} = await this.userService.findOne(result.id)
+  const {userPassword, ...user} = await this.userService.findOne(result.id)
 
   const tokens = this.generateTokens(user.id)
 
@@ -90,12 +91,11 @@ export class AuthService {
 
 
   private async validateUser(dto:LoginDto){
-    const user = await this.userService.findOneByEmail(dto.email)
 
+    const user = await this.userService.findOneByEmail(dto.userEmail)
     if(!user)throw new NotFoundException("User not found")
 
-    const isValid = await verify(user.password, dto.password)
-
+    const isValid = await verify(user.userPassword, dto.userPassword)
     if(!isValid) throw new NotFoundException("Invalid password")
 
     return user

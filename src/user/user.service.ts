@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
 import { RegistrationDto, UpdateDto } from '../auth/dto/auth.dto';
 import { hash } from 'argon2';
@@ -11,32 +10,32 @@ export class UserService {
 
   async create(dto: RegistrationDto) {
     const user ={
-      email:dto.email,
-      name:dto.name,
-      password: await hash(dto.password)
+      userEmail:dto.userEmail,
+      userFullName:dto.userFullName,
+      userPassword: await hash(dto.userPassword)
     }
     return this.prisma.user.create({
-      data:user
+      data:user  
     });
   }
 
   async update(dto: UpdateDto) {
     let passwd:string|undefined=""
-    if(dto.password){
-      passwd=await hash(dto.password) 
+    if(dto.userPassword){
+      passwd=await hash(dto.userPassword) 
     }else{
       passwd=undefined
     }
 
     return this.prisma.user.update({
       where: {
-        email:dto.email
+        userEmail:dto.userEmail
       },
       data: {
-        name:dto.name || undefined,
-        phoneNumber:dto.phoneNumber || undefined,
-        address:dto.address || undefined,
-        password: passwd 
+        userFullName:dto.userFullName,
+        userPhoneNumber:dto.userPhoneNumber,
+        userAddress:dto.userAddress,
+        userPassword: passwd 
       }
     });
   }
@@ -54,10 +53,10 @@ export class UserService {
     })
   }
 
-  findOneByEmail(email: string) {
+  findOneByEmail(userEmail: string) {
     return this.prisma.user.findUnique({
       where:{
-        email
+        userEmail
       }
 
     })
