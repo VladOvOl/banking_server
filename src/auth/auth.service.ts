@@ -8,7 +8,7 @@ import { Response } from 'express';
 @Injectable()
 export class AuthService {
 
-  EXPIRE_DAY_REFRESH_TOKEN = 1 
+  EXPIRE_DAY_REFRESH_TOKEN = 15 
   REFRESH_TOKEN_NAME='refreshToken'
 
   constructor(
@@ -18,9 +18,8 @@ export class AuthService {
 
 
   async registrationUser(dto: RegistrationDto) {
-
     const finedUser = await this.userService.findOneByEmail(dto.userEmail)
-    
+
     if(finedUser) throw new BadRequestException("User already exist")
 
     const {userPassword, ...user} = await this.userService.create(dto)
@@ -50,7 +49,6 @@ export class AuthService {
   }
 
   async loginUser(dto: LoginDto) {
-
     const {userPassword, ...user} = await this.validateUser(dto)
     const tokens = await this.generateTokens(user.id)
     return {
@@ -63,12 +61,13 @@ export class AuthService {
     const data = {id:userId}
 
     const accessToken = this.jwt.sign(data,{
-      expiresIn: '1h'
+      expiresIn: '15m'
     })
 
     const refreshToken = this.jwt.sign(data,{
-      expiresIn: '1d'
+      expiresIn: '15m'
     })
+    console.log('fvfiuvhfu')
 
     return {accessToken, refreshToken}
   }
@@ -103,7 +102,7 @@ export class AuthService {
 
   addRefreshTokenToResponse(res:Response, refreshToken:string){
     const expiresIn = new Date()
-    expiresIn.setHours(expiresIn.getHours()+this.EXPIRE_DAY_REFRESH_TOKEN)
+    expiresIn.setMinutes(expiresIn.getMinutes()+this.EXPIRE_DAY_REFRESH_TOKEN)
     res.cookie(this.REFRESH_TOKEN_NAME, refreshToken,{
       httpOnly:true,
       domain: 'localhost',

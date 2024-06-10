@@ -32,7 +32,6 @@ export class CardService {
     return this.prisma.card.create({
       data:card
     })
-
   }
 
   async getAllCards(dto : {userId:number}) {
@@ -51,7 +50,6 @@ export class CardService {
       },     
     }).catch(() => { throw new BadRequestException("Card don`t find")})
 
-    console.log(response)
     return response
   }
 

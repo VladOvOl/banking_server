@@ -52,12 +52,13 @@ model CardTransaction {
   createdAt               DateTime @default(now()) @map("created_at")
   updatedAt               DateTime @updatedAt @map("updated_at") 
 
-  value                   Float     @map("value")
+  value                   Float    @map("value")
   userSenderFullName      String   @db.VarChar(255) @map("user_sender_full_name")
   userSenderCardNumber    String   @db.VarChar(255) @map("card_sender_number")
   userRecipientFullName   String   @db.VarChar(255) @map("user_recipient_full_name")
   userRecipientCardNumber String   @db.VarChar(255) @map("card_recipient_number")
   process                 String   @db.VarChar(255) @map("process")
+  typeTransaction         String   @db.VarChar(255) @map("type_transaction")
 
   card                    Card     @relation(fields: [cardId],references: [id])
   cardId                  String   @map("card_id")

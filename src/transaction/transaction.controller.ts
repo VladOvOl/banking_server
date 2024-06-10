@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpCode } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
-import { CreateTransactionDto, GetAllByCardDto } from './dto/transaction.dto';
+import { CreatePaymentDto, CreateTransactionDto, GetAllByCardDto } from './dto/transaction.dto';
 
 
 @Controller('transaction')
@@ -15,9 +15,19 @@ export class TransactionController {
     res: Response) {
     
     const response = await this.transactionService.create(createTransactionDto)
-    
     return response
   }
+
+  @Post('createPayment')
+  async createPayment(
+    @Body() dto:  CreatePaymentDto, 
+    @Res({passthrough:true}) 
+    res: Response) {
+    
+    const response = await this.transactionService.createPayment(dto)
+    return response
+  }
+
 
   
   
@@ -28,7 +38,14 @@ export class TransactionController {
     res: Response) { 
 
       const response = await this.transactionService.findAllByCard(getAllTransactionDto)
-    
+      return response;
+  }
+
+  @Post('getAllByUser')
+  async findAllTransactionByUser(
+    @Body() dto:{cardIds: string[]}){ 
+
+      const response = await this.transactionService.findAllByUser(dto)
       return response;
   }
 /*
