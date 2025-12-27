@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePaymentDto, CreateTransactionDto, GetAllByCardDto } from './dto/transaction.dto';
-import { PrismaService } from 'src/prisma.service';
-import { UtilsService } from 'src/utils/utils.service';
+import { PrismaService } from '../prisma.service';
+import { UtilsService } from '../utils/utils.service';
 
 
 @Injectable()
