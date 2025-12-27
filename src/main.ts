@@ -9,8 +9,10 @@ async function startServer() {
 	app.use(cookieParser())
 	app.enableCors({
 		origin: 'http://localhost:5555',
-		credentials: true,
-		exposedHeaders: 'set-cookie'
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    exposedHeaders: ['set-cookie']
 	})
 	await app.listen(7777);
 }
