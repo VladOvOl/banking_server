@@ -8,7 +8,10 @@ async function startServer() {
 	app.setGlobalPrefix('api')
 	app.use(cookieParser())
 	app.enableCors({
-		origin: 'http://localhost:5555',
+		origin: [
+      'http://localhost:5555',
+      'https://banking-server-gilt.vercel.app',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
