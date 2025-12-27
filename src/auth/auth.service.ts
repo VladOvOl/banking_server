@@ -8,7 +8,7 @@ import { Response } from 'express';
 @Injectable()
 export class AuthService {
 
-  EXPIRE_DAY_REFRESH_TOKEN = 15 
+  EXPIRE_DAY_REFRESH_TOKEN = 15
   REFRESH_TOKEN_NAME='refreshToken'
 
   constructor(
@@ -35,7 +35,7 @@ export class AuthService {
   async updateUser(dto: UpdateDto) {
 
     const finedUser = await this.userService.findOneByEmail(dto.userEmail)
-    
+
     if(!finedUser) throw new BadRequestException("User dont find")
 
     const {userPassword, ...user} = await this.userService.update(dto)
@@ -107,7 +107,8 @@ export class AuthService {
       httpOnly:true,
       domain: 'localhost',
       expires:expiresIn,
-      secure:true,
+      secure:false,
+      path: '/',
       sameSite:'none'
 
     })
@@ -119,7 +120,8 @@ export class AuthService {
       httpOnly:true,
       domain: 'localhost',
       expires:new Date(0),
-      secure:true,
+      secure:false,
+      path: '/',
       sameSite:'none'
 
     })
