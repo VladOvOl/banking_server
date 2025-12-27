@@ -1,25 +1,28 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 
-async function startServer() {
-	const app = await NestFactory.create(AppModule);
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
 
-	app.setGlobalPrefix('api')
+  // Глобальный префикс для всех роутов
+  app.setGlobalPrefix('api');
 
-	app.enableCors({
-		origin: ['*'
-      //'http://localhost:5555',
-      //'https://banking-server-gilt.vercel.app',
+  // Настройка CORS
+  app.enableCors({
+    origin: [
+      'http://localhost:5555',          // локальный фронтенд
+      'https://banking-server-gilt.vercel.app', // продакшн фронтенд
     ],
-    credentials: true,
+    credentials: true, // разрешаем куки/авторизацию
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    exposedHeaders: ['set-cookie']
-	})
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Set-Cookie'],
+  });
 
-  app.use(cookieParser())
+  // Поддержка работы с куками
+  app.use(cookieParser.default());
+
   await app.listen(7777);
 }
-
-startServer();
+bootstrap();
