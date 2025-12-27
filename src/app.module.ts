@@ -6,7 +6,10 @@ import { CardModule } from './card/card.module';
 import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(),
+  imports: [ConfigModule.forRoot({
+    isGlobal: true,
+    envFilePath: '.env',
+  }),
     AuthModule,
     UserModule,
     CardModule,
