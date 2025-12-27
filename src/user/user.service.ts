@@ -15,14 +15,14 @@ export class UserService {
       userPassword: await hash(dto.userPassword)
     }
     return this.prisma.user.create({
-      data:user  
+      data:user
     });
   }
 
   async update(dto: UpdateDto) {
     let passwd:string|undefined=""
     if(dto.userPassword){
-      passwd=await hash(dto.userPassword) 
+      passwd=await hash(dto.userPassword)
     }else{
       passwd=undefined
     }
@@ -35,13 +35,13 @@ export class UserService {
         userFullName:dto.userFullName,
         userPhoneNumber:dto.userPhoneNumber,
         userAddress:dto.userAddress,
-        userPassword: passwd 
+        userPassword: passwd
       }
     });
   }
 
   async findAll() {
-    return `This action returns all user`;
+    return `This action returns all user!`;
   }
 
   async findOne(id: number) {
